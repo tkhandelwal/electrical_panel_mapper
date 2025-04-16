@@ -1,0 +1,27 @@
+name: electrical_panel_mapper
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  provider: ^6.1.4  # Latest stable version as of now
+  camera: ^0.10.5+5
+  path_provider: ^2.0.15
+  sqflite: ^2.2.8+4
+  image_picker: ^1.0.4
+  path: ^1.8.3
+  image: ^4.1.3
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
