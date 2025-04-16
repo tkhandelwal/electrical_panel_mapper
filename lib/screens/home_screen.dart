@@ -1,16 +1,81 @@
+// screens/home_screen.dart (updated version)
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../services/panel_service.dart';
 import '../models/panel.dart';
-import 'panel_capture/panel_capture_screen.dart';
-import 'panel_editor/panel_editor_screen.dart';
-import 'panel_creation/manual_panel_screen.dart';
+import '../screens/panel_capture/panel_capture_screen.dart';
+import '../screens/panel_editor/panel_editor_screen.dart';
+import '../screens/panel_creation/manual_panel_screen.dart';
+import '../screens/energy_monitoring/energy_monitoring_dashboard.dart';
+import '../screens/device_mapping/device_mapping_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+  @override
+  HomeScreenState createState() => HomeScreenState();
+}
+
+class HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex = 0;
+
+  // List of main app screens
+  late List<Widget> _screens;
+
+  @override
+  void initState() {
+    super.initState();
+    _screens = [
+      _PanelsDashboard(),
+      EnergyMonitoringDashboard(),
+      _DeviceManagementDashboard(),
+      _SettingsDashboard(),
+    ];
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _screens[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.electrical_services),
+            label: 'Panels',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bar_chart),
+            label: 'Energy',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.devices),
+            label: 'Devices',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Theme.of(context).primaryColor,
+        unselectedItemColor: Colors.grey,
+        onTap: _onItemTapped,
+        type: BottomNavigationBarType.fixed,
+      ),
+    );
+  }
+}
+
+class _PanelsDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,15 +88,6 @@ class HomeScreen extends StatelessWidget {
               // TODO: Implement search functionality
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Search coming soon')),
-              );
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.settings),
-            onPressed: () {
-              // TODO: Implement settings screen
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Settings coming soon')),
               );
             },
           ),
@@ -97,7 +153,7 @@ class HomeScreen extends StatelessWidget {
             itemCount: panels.length,
             itemBuilder: (context, index) {
               final panel = panels[index];
-              return PanelListItem(
+              return _PanelListItem(
                 panel: panel,
                 onTap: () => _navigateToPanelEditor(context, panel),
               );
@@ -152,12 +208,11 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class PanelListItem extends StatelessWidget {
+class _PanelListItem extends StatelessWidget {
   final Panel panel;
   final VoidCallback onTap;
 
-  const PanelListItem({
-    super.key,
+  const _PanelListItem({
     required this.panel,
     required this.onTap,
   });
@@ -288,5 +343,83 @@ class PanelListItem extends StatelessWidget {
   
   String _formatDate(DateTime date) {
     return '${date.month}/${date.day}/${date.year}';
+  }
+}
+
+class _DeviceManagementDashboard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Device Management'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              // TODO: Implement device addition
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Add device functionality coming soon')),
+              );
+            },
+          ),
+        ],
+      ),
+      body: Center(
+        child: Text('Device Management Dashboard'),
+      ),
+    );
+  }
+}
+
+class _SettingsDashboard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Settings'),
+      ),
+      body: ListView(
+        children: [
+          ListTile(
+            title: Text('Backup & Restore'),
+            subtitle: Text('Create a backup of your electrical panel data'),
+            leading: Icon(Icons.backup),
+            onTap: () {
+              // TODO: Implement backup functionality
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Backup functionality coming soon')),
+              );
+            },
+          ),
+          ListTile(
+            title: Text('Theme'),
+            subtitle: Text('Change app appearance'),
+            leading: Icon(Icons.color_lens),
+            onTap: () {
+              // TODO: Implement theme switching
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Theme settings coming soon')),
+              );
+            },
+          ),
+          ListTile(
+            title: Text('About'),
+            subtitle: Text('App version and information'),
+            leading: Icon(Icons.info_outline),
+            onTap: () {
+              showAboutDialog(
+                context: context,
+                applicationName: 'Electrical Panel Mapper',
+                applicationVersion: '1.0.0',
+                applicationIcon: Icon(Icons.electrical_services),
+                children: [
+                  Text('Track and manage your electrical panels with ease.'),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
+    );
   }
 }
